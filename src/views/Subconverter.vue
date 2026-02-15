@@ -1342,6 +1342,10 @@ export default {
     align-items: center;
   }
 
+  .btn-row .el-button + .el-button {
+    margin-left: 0;
+  }
+
   .btn-generate,
   .btn-secondary,
   .btn-tutorial {
