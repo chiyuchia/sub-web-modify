@@ -1,5 +1,5 @@
 export const customBackend = [
-  { label: 'SubConverter-Extended', value: 'https://api.asailor.org' },
+  { label: 'SubConverter-Extended', value: 'https://api.asailor.org', extended: true },
   { label: 'CM负载均衡后端【vless reality+hy1+hy2】', value: 'https://subapi.cmliussss.net' },
   { label: 'CM应急备用后端【vless reality+hy1+hy2】', value: 'https://subapi.fxxk.dedyn.io' },
   { label: '肥羊增强型后端【vless reality+hy1+hy2】', value: 'https://url.v1.mk' },

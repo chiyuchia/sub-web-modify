@@ -42,13 +42,20 @@
                   clearable
                   @input="syncSourceSubUrl"
                 />
-                <el-input
-                  v-model="sub.providerName"
-                  class="sub-provider-input"
-                  placeholder="名称(可选)"
-                  clearable
-                  @input="syncSourceSubUrl"
-                />
+                <el-tooltip
+                  v-if="isExtendedBackend"
+                  content="仅支持订阅链接，不支持单节点链接"
+                  placement="top"
+                  :open-delay="500"
+                >
+                  <el-input
+                    v-model="sub.providerName"
+                    class="sub-provider-input"
+                    placeholder="名称(可选)"
+                    clearable
+                    @input="syncSourceSubUrl"
+                  />
+                </el-tooltip>
                 <el-button
                   class="sub-entry-btn sub-entry-delete"
                   icon="el-icon-minus"
@@ -586,6 +593,10 @@ export default {
     hasValidSub() {
       return this.subscriptions.some(s => s.url.trim() !== '');
     },
+    isExtendedBackend() {
+      const item = customBackend.find(b => b.value === this.form.customBackend);
+      return item ? !!item.extended : false;
+    },
   },
   created() {
     document.title = '在线订阅转换工具';
@@ -616,11 +627,12 @@ export default {
       this.syncSourceSubUrl();
     },
     syncSourceSubUrl() {
+      const useProvider = this.isExtendedBackend;
       this.form.sourceSubUrl = this.subscriptions
         .filter(s => s.url.trim() !== '')
         .map(s => {
           const url = s.url.trim();
-          const name = s.providerName.trim();
+          const name = useProvider ? s.providerName.trim() : '';
           return name ? `provider:${name},${url}` : url;
         })
         .join('|');
@@ -641,6 +653,7 @@ export default {
     },
     selectChanged() {
       this.getBackendVersion();
+      this.syncSourceSubUrl();
     },
     getUrlParam() {
       let query = window.location.search.substring(1);
