@@ -3,26 +3,15 @@
     <div class="converter-card">
       <!-- Header -->
       <header class="card-header">
+        <span class="header-icon header-icon--left" @click="goToProject" title="GitHub">
+          <svg-icon icon-class="github" />
+        </span>
         <button class="theme-toggle" @click="change" aria-label="切换主题">
           <i id="rijian" class="el-icon-sunny"></i>
           <i id="yejian" class="el-icon-moon"></i>
         </button>
         <h1 class="card-title">订阅转换</h1>
         <p class="card-subtitle" v-if="backendVersion">{{ backendVersion }}</p>
-        <div class="social-icons">
-          <span class="social-icon" @click="goToProject" title="GitHub">
-            <svg-icon icon-class="github" />
-          </span>
-          <span class="social-icon" @click="gotoTgChannel" title="Telegram">
-            <svg-icon icon-class="telegram" />
-          </span>
-          <span class="social-icon" @click="gotoBiliBili" title="Bilibili">
-            <svg-icon icon-class="bilibili" />
-          </span>
-          <span class="social-icon" @click="gotoYouTuBe" title="YouTube">
-            <svg-icon icon-class="youtube" />
-          </span>
-        </div>
       </header>
 
       <!-- Body -->
@@ -1132,7 +1121,7 @@ export default {
 .card-header {
   position: relative;
   text-align: center;
-  padding: 28px 24px 20px;
+  padding: 24px;
   border-bottom: 1px solid var(--divider-color, rgba(0,0,0,0.06));
 }
 
@@ -1178,36 +1167,36 @@ export default {
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
-/* ===== Social Icons ===== */
-.social-icons {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 14px;
-}
-
-.social-icon {
+/* ===== Header Icon (GitHub) ===== */
+.header-icon {
+  position: absolute;
+  top: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--input-border, rgba(0,0,0,0.1));
+  background: var(--input-bg, rgba(255,255,255,0.5));
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: all 0.2s ease;
-  font-size: 18px;
-}
-
-.social-icon:hover {
+  font-size: 16px;
   color: var(--text-primary);
-  background: var(--input-bg, rgba(255,255,255,0.5));
-  transform: translateY(-2px);
+  transition: all 0.3s ease;
 }
 
-.social-icon >>> .svg-icon {
-  width: 20px;
-  height: 20px;
+.header-icon--left {
+  left: 16px;
+}
+
+.header-icon:hover {
+  border-color: var(--input-focus-border, #6366F1);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.header-icon >>> .svg-icon {
+  width: 18px;
+  height: 18px;
   fill: currentColor;
 }
 
