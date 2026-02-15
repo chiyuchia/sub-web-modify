@@ -28,13 +28,47 @@
       <!-- Body -->
       <main class="card-body">
         <el-form :model="form" label-width="80px" label-position="left">
-          <el-form-item label="订阅链接:">
-            <el-input
-              v-model="form.sourceSubUrl"
-              type="textarea"
-              rows="3"
-              placeholder="支持各种订阅链接或单节点链接，多个链接每行一个或用 | 分隔"
-            />
+          <el-form-item label="订阅链接:" class="sub-list-item">
+            <div class="sub-entry-list">
+              <div
+                v-for="(sub, index) in subscriptions"
+                :key="index"
+                class="sub-entry-row"
+              >
+                <el-input
+                  v-model="sub.url"
+                  class="sub-url-input"
+                  placeholder="订阅链接或节点链接"
+                  clearable
+                  @input="syncSourceSubUrl"
+                />
+                <el-input
+                  v-model="sub.providerName"
+                  class="sub-provider-input"
+                  placeholder="名称(可选)"
+                  clearable
+                  @input="syncSourceSubUrl"
+                />
+                <el-button
+                  class="sub-entry-btn sub-entry-delete"
+                  icon="el-icon-minus"
+                  circle
+                  :disabled="subscriptions.length <= 1"
+                  @click="removeSub(index)"
+                />
+                <el-button
+                  v-if="index === subscriptions.length - 1"
+                  class="sub-entry-btn sub-entry-add"
+                  icon="el-icon-plus"
+                  circle
+                  @click="addSub"
+                />
+                <div
+                  v-else
+                  class="sub-entry-btn-placeholder"
+                />
+              </div>
+            </div>
           </el-form-item>
           <el-form-item label="生成类型:">
             <el-select v-model="form.clientType" style="width: 100%">
@@ -222,7 +256,7 @@
               <el-button
                 class="btn-generate"
                 @click="makeUrl"
-                :disabled="form.sourceSubUrl.length === 0 || btnBoolean"
+                :disabled="!hasValidSub || btnBoolean"
                 >生成订阅链接
               </el-button>
               <el-button
@@ -486,6 +520,7 @@ export default {
           'suo.yt': 'https://suo.yt/short',
         },
       },
+      subscriptions: [{ providerName: '', url: '' }],
       form: {
         sourceSubUrl: '',
         clientType: '',
@@ -548,6 +583,9 @@ export default {
     customBackend() {
       return customBackend;
     },
+    hasValidSub() {
+      return this.subscriptions.some(s => s.url.trim() !== '');
+    },
   },
   created() {
     document.title = '在线订阅转换工具';
@@ -556,7 +594,6 @@ export default {
   mounted() {
     //this.tanchuang();
     this.form.clientType = 'clash';
-    this.getBackendVersion();
     this.anhei();
     let lightMedia = window.matchMedia('(prefers-color-scheme: light)');
     let darkMedia = window.matchMedia('(prefers-color-scheme: dark)');
@@ -571,6 +608,37 @@ export default {
     } //监听系统主题，自动切换！
   },
   methods: {
+    addSub() {
+      this.subscriptions.push({ providerName: '', url: '' });
+    },
+    removeSub(index) {
+      this.subscriptions.splice(index, 1);
+      this.syncSourceSubUrl();
+    },
+    syncSourceSubUrl() {
+      this.form.sourceSubUrl = this.subscriptions
+        .filter(s => s.url.trim() !== '')
+        .map(s => {
+          const url = s.url.trim();
+          const name = s.providerName.trim();
+          return name ? `provider:${name},${url}` : url;
+        })
+        .join('|');
+    },
+    parseUrlToSubscriptions(urlStr) {
+      if (!urlStr) return;
+      const parts = urlStr.split('|').filter(Boolean);
+      this.subscriptions = parts.map(part => {
+        const match = part.match(/^provider:([^,]+),(.+)$/);
+        if (match) {
+          return { providerName: match[1], url: match[2] };
+        }
+        return { providerName: '', url: part };
+      });
+      if (this.subscriptions.length === 0) {
+        this.subscriptions = [{ providerName: '', url: '' }];
+      }
+    },
     selectChanged() {
       this.getBackendVersion();
     },
@@ -667,6 +735,7 @@ export default {
       });
     },
     makeUrl() {
+      this.syncSourceSubUrl();
       if (this.form.sourceSubUrl === '' || this.form.clientType === '') {
         this.$message.error('订阅链接与客户端为必填项');
         return false;
@@ -855,6 +924,7 @@ export default {
         }
         if (param.get('url')) {
           this.form.sourceSubUrl = param.get('url');
+          this.parseUrlToSubscriptions(param.get('url'));
         }
         if (param.get('insert')) {
           this.form.insert = param.get('insert') === 'true';
@@ -952,6 +1022,7 @@ export default {
       return data;
     },
     confirmUploadScript() {
+      this.syncSourceSubUrl();
       if (this.form.sourceSubUrl.trim() === '') {
         this.$message.error('订阅链接不能为空');
         return false;
@@ -1279,6 +1350,73 @@ export default {
   .social-icons {
     gap: 12px;
   }
+
+  .sub-entry-row {
+    flex-wrap: wrap;
+  }
+
+  .sub-provider-input {
+    width: calc(100% - 36px);
+  }
+}
+
+/* ===== Subscription Entry List ===== */
+.sub-list-item >>> .el-form-item__content {
+  line-height: normal;
+}
+
+.sub-entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sub-entry-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sub-provider-input {
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.sub-url-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.sub-entry-btn {
+  flex-shrink: 0;
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  font-size: 12px !important;
+  border: 1px solid var(--input-border, rgba(0,0,0,0.12)) !important;
+  background: var(--input-bg, rgba(255,255,255,0.5)) !important;
+  color: var(--text-secondary) !important;
+  transition: all 0.2s ease;
+}
+
+.sub-entry-btn:hover:not(.is-disabled) {
+  border-color: var(--input-focus-border, #6366F1) !important;
+  color: var(--input-focus-border, #6366F1) !important;
+}
+
+.sub-entry-delete:hover:not(.is-disabled) {
+  border-color: #EF4444 !important;
+  color: #EF4444 !important;
+}
+
+.sub-entry-btn-placeholder {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+}
+
+.sub-entry-add {
+  margin-left: 0 !important;
 }
 
 /* ===== Reduced Motion ===== */
