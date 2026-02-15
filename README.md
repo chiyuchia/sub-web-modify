@@ -3,7 +3,7 @@
 <div align="center">
   <h3>🚀 全网最美观的订阅转换前端界面</h3>
   <p>基于 Vue.js 开发的现代化订阅转换 Web 前端</p>
-  
+
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Node.js Version](https://img.shields.io/badge/node-%3E%3D%2018-brightgreen)](https://nodejs.org/)
   [![Vue Version](https://img.shields.io/badge/vue-2.7.16-green)](https://vuejs.org/)
@@ -20,6 +20,8 @@ Sub-Web-Modify 是基于 [CareyWang/sub-web](https://github.com/CareyWang/sub-we
 - 📱 **响应式设计** - 完美适配桌面端和移动端设备
 - 🔗 **多种订阅格式支持** - 支持 Clash、Surge、V2Ray、Quantumult X 等主流客户端
 - 🛠 **高级功能** - 节点筛选、重命名、配置定制等高级选项
+- 📝 **多行订阅输入** - 支持动态增减订阅链接，每条独立管理
+- 🏷️ **Provider 命名** - SubConverter-Extended 后端支持为订阅设置自定义名称
 
 ## 🖥️ 界面预览
 
@@ -31,8 +33,8 @@ Sub-Web-Modify 是基于 [CareyWang/sub-web](https://github.com/CareyWang/sub-we
 
 1. **Fork 本仓库** 到你的 GitHub 账户
 2. **修改配置文件**：
-   - 编辑 `src\views\Subconverter.vue` - 配置默认后端地址
-   - 编辑 `.env` - 设置环境变量
+   - 编辑 `.env` - 设置后端地址、短链接服务等环境变量
+   - 编辑 `src/config.js` - 自定义后端列表和远程配置预设
 3. **连接到 Cloudflare Pages**：
    - 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
    - 进入 Pages → 创建项目 → 连接到 Git
@@ -49,8 +51,8 @@ Sub-Web-Modify 是基于 [CareyWang/sub-web](https://github.com/CareyWang/sub-we
 
 1. **Fork 本仓库** 到你的 GitHub 账户
 2. **修改配置文件**：
-   - 编辑 `src\views\Subconverter.vue` - 配置默认后端地址
-   - 编辑 `.env` - 设置环境变量
+   - 编辑 `.env` - 设置后端地址、短链接服务等环境变量
+   - 编辑 `src/config.js` - 自定义后端列表和远程配置预设
 3. **连接到 EdgeOne Pages**：
    - 登录 [EdgeOne 控制台](https://console.cloud.tencent.com/edgeone)
    - 进入 Pages → 新建项目 → 连接 Git 仓库
@@ -67,22 +69,32 @@ Sub-Web-Modify 是基于 [CareyWang/sub-web](https://github.com/CareyWang/sub-we
 
 ## 🔧 配置说明
 
-部署前需要修改以下两个文件：
+部署前需要修改以下配置文件：
 
-### 1. src\views\Subconverter.vue
-修改默认后端地址和相关配置
-
-### 2. .env
+### 1. .env
 设置环境变量：
 ```env
 # 默认后端地址
 VUE_APP_SUBCONVERTER_DEFAULT_BACKEND=https://your-backend-url.com
 
+# 默认远程配置
+VUE_APP_SUBCONVERTER_REMOTE_CONFIG=https://your-remote-config-url
+
 # 短链接服务
 VUE_APP_MYURLS_DEFAULT_BACKEND=https://your-short-url-service.com
 
-# 其他配置...
+# 配置上传后端
+VUE_APP_CONFIG_UPLOAD_BACKEND=https://your-config-upload-backend.com
+
+# 社交链接
+VUE_APP_PROJECT=https://github.com/your-repo
+VUE_APP_BOT_LINK=https://t.me/your-channel
+VUE_APP_BILIBILI_LINK=https://space.bilibili.com/your-id
+VUE_APP_YOUTUBE_LINK=https://www.youtube.com/@your-channel
 ```
+
+### 2. src/config.js
+自定义后端服务器列表和远程配置预设。支持为后端添加 `extended: true` 标记以启用 Provider 命名功能（仅 SubConverter-Extended 后端支持）。
 
 ## 📋 支持的客户端
 
@@ -97,6 +109,8 @@ VUE_APP_MYURLS_DEFAULT_BACKEND=https://your-short-url-service.com
 ## 🛠️ 主要功能
 
 - **订阅链接转换** - 支持各种格式的订阅链接相互转换
+- **多行订阅管理** - 动态增减订阅链接，每条独立输入和管理
+- **Provider 命名** - Extended 后端支持为每条订阅设置自定义名称（仅支持订阅链接，不支持单节点链接）
 - **节点筛选** - 通过关键字或正则表达式筛选节点
 - **节点重命名** - 批量重命名节点，支持正则替换
 - **自定义配置** - 支持上传自定义的远程配置文件
