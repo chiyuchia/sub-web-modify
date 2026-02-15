@@ -95,6 +95,11 @@
 .dark-mode .el-input-group__prepend {
   background: transparent !important;
   border-color: var(--input-border) !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+
+.dark-mode .el-input-group .el-input__inner {
+  border-radius: 8px 0 0 8px !important;
 }
 
 .dark-mode .el-input-group__append button.el-button {
