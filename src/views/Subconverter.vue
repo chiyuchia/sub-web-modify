@@ -491,7 +491,7 @@ export default {
         clientType: '',
         customBackend: this.getUrlParam() == '' ? 'https://api.asailor.org' : this.getUrlParam(),
         shortType: 'https://v1.mk/short',
-        remoteConfig: 'https://raw.githubusercontent.com/cmliu/ACL4SSR/main/Clash/config/ACL4SSR_Online.ini',
+        remoteConfig: 'https://raw.githubusercontent.com/chiyuchia/proxy-rule/refs/heads/master/clash_config.ini',
         excludeRemarks: '',
         includeRemarks: '',
         filename: '',

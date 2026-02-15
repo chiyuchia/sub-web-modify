@@ -12,6 +12,19 @@ export const customBackend = [
 
 export const remoteConfig = [
   {
+    label: '自定义规则',
+    options: [
+      {
+        label: 'chiyuchia 规则（GitHub）',
+        value: 'https://raw.githubusercontent.com/chiyuchia/proxy-rule/refs/heads/master/clash_config.ini',
+      },
+      {
+        label: 'chiyuchia 规则（CDN）',
+        value: 'https://cdn.jsdmirror.com/gh/chiyuchia/proxy-rule@master/clash_config.ini',
+      },
+    ],
+  },
+  {
     label: 'CM规则',
     options: [
       {
