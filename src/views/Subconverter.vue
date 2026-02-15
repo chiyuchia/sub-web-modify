@@ -50,7 +50,7 @@
               placeholder="可输入自己的后端"
               style="width: 100%"
             >
-              <el-option v-for="(v, k) in options.customBackend" :key="k" :label="k" :value="v"></el-option>
+              <el-option v-for="item in customBackend" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="短链选择:">
@@ -446,7 +446,7 @@ const tgBotLink = process.env.VUE_APP_BOT_LINK;
 const yglink = process.env.VUE_APP_YOUTUBE_LINK;
 const bzlink = process.env.VUE_APP_BILIBILI_LINK;
 const downld = 'http://' + window.location.host + '/download.html';
-import { remoteConfig } from '@/config';
+import { remoteConfig, customBackend } from '@/config';
 import { getDefaultBackendInfo, isHtmlResponse } from '@/utils';
 export default {
   data() {
@@ -485,23 +485,11 @@ export default {
           'dlj.tf': 'https://dlj.tf/short',
           'suo.yt': 'https://suo.yt/short',
         },
-        customBackend: {
-          'CM负载均衡后端【vless reality+hy1+hy2】': 'https://subapi.cmliussss.net',
-          'CM应急备用后端【vless reality+hy1+hy2】': 'https://subapi.fxxk.dedyn.io',
-          '肥羊增强型后端【vless reality+hy1+hy2】': 'https://url.v1.mk',
-          '肥羊备用后端【vless reality+hy1+hy2】': 'https://api.v1.mk',
-        },
-        backendOptions: [
-          { value: 'https://subapi.cmliussss.net' },
-          { value: 'https://subapi.fxxk.dedyn.io' },
-          { value: 'https://url.v1.mk' },
-          { value: 'https://api.v1.mk' },
-        ],
       },
       form: {
         sourceSubUrl: '',
         clientType: '',
-        customBackend: this.getUrlParam() == '' ? 'https://url.v1.mk' : this.getUrlParam(),
+        customBackend: this.getUrlParam() == '' ? 'https://api.asailor.org' : this.getUrlParam(),
         shortType: 'https://v1.mk/short',
         remoteConfig: 'https://raw.githubusercontent.com/cmliu/ACL4SSR/main/Clash/config/ACL4SSR_Online.ini',
         excludeRemarks: '',
@@ -552,6 +540,14 @@ export default {
       scriptConfig: scriptConfigSample,
       sampleConfig: remoteConfigSample,
     };
+  },
+  computed: {
+    remoteConfig() {
+      return remoteConfig;
+    },
+    customBackend() {
+      return customBackend;
+    },
   },
   created() {
     document.title = '在线订阅转换工具';
@@ -995,12 +991,23 @@ export default {
       this.$axios
         .get(this.form.customBackend + '/version')
         .then((res) => {
-          if (isHtmlResponse) {
-            this.backendVersion = '';
+          let version = '';
+          if (isHtmlResponse(res)) {
+            // 部分后端（如 SubConverter-Extended）返回 HTML，尝试从中提取版本号
+            const match = res.data.match(/Version<\/span>\s*<div[^>]*>(v[\d.]+)<\/div>/i);
+            version = match ? 'SubConverter-Extended ' + match[1] : '';
           } else {
-            this.backendVersion = res.data.replace(/backend\n$/gm, '');
-            this.backendVersion = this.backendVersion.replace('subconverter', 'SubConverter');
+            version = res.data.replace(/backend\n$/gm, '').trim();
+            // 如果 body 异常（如只返回单个字符），尝试从响应头 server 字段获取版本号
+            if (version.length <= 2) {
+              const server = res.headers['server'] || '';
+              const match = server.match(/subconverter\/(v[\d.]+[-\w]*)/i);
+              version = match ? 'SubConverter ' + match[1] : '';
+            } else {
+              version = version.replace('subconverter', 'SubConverter');
+            }
           }
+          this.backendVersion = version;
           this.$message.success(`${this.backendVersion} ` + defaultBackendInfo);
         })
         .catch(() => {
