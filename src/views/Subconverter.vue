@@ -445,7 +445,7 @@ const advancedVideo = process.env.VUE_APP_ADVANCED_VIDEO;
 const tgBotLink = process.env.VUE_APP_BOT_LINK;
 const yglink = process.env.VUE_APP_YOUTUBE_LINK;
 const bzlink = process.env.VUE_APP_BILIBILI_LINK;
-const downld = 'http://' + window.location.host + '/download.html';
+const downld = window.location.protocol + '//' + window.location.host + '/download.html';
 import { remoteConfig, customBackend } from '@/config';
 import { getDefaultBackendInfo, isHtmlResponse } from '@/utils';
 export default {
@@ -489,9 +489,9 @@ export default {
       form: {
         sourceSubUrl: '',
         clientType: '',
-        customBackend: this.getUrlParam() == '' ? 'https://api.asailor.org' : this.getUrlParam(),
-        shortType: 'https://v1.mk/short',
-        remoteConfig: 'https://raw.githubusercontent.com/chiyuchia/proxy-rule/refs/heads/master/clash_config.ini',
+        customBackend: this.getUrlParam() == '' ? defaultBackend : this.getUrlParam(),
+        shortType: shortUrlBackend,
+        remoteConfig: remoteConfigSample,
         excludeRemarks: '',
         includeRemarks: '',
         filename: '',
