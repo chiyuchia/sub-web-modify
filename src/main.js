@@ -9,6 +9,7 @@ require(`@/plugins/device`)
 require(`@/plugins/particles`)
 
 
+import './assets/css/reset.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import './assets/css/light.min.css'
 import './assets/css/dark.min.css'
