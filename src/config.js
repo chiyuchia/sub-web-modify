@@ -1,5 +1,6 @@
 export const customBackend = [
-  { label: "chiyuchia 后端", value: "https://subapi.jiyujia.top", extended: true },
+  { label: "chiyuchia 后端【原版】", value: "https://subconverter.jiyujia.top" },
+  { label: "chiyuchia 后端【Extended】", value: "https://subapi.jiyujia.top", extended: true },
   {
     label: "SubConverter-Extended 官方后端",
     value: "https://api.asailor.org",
